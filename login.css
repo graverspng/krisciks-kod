@@ -1,0 +1,100 @@
+:root{
+    --bg-1: rgba(102,99,121,1);
+    --bg-2: rgba(81,75,97,1);
+    --card-bg: rgba(30,26,42,0.6);
+    --panel: rgba(44,38,56,0.7);
+    --accent: linear-gradient(90deg,#6d54b5,#8b5cf6);
+}
+
+html,body{
+    height:100%;
+}
+
+body{
+    margin:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(90deg,var(--bg-1) 0%, var(--bg-2) 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 28px;
+}
+
+.grid{
+    width:100%;
+    max-width:920px;
+    display:grid;
+    grid-template-columns: 1fr 420px 1fr;
+    gap:20px;
+    align-items:start;
+}
+
+.vraksts{
+    grid-column: 1/4;
+    justify-self:center;
+    background: transparent;
+    box-shadow:none;
+    color:#fff;
+    text-align:center;
+}
+
+.txt1{
+    font-size:64px;
+    margin: 0 0 6px 0;
+    font-weight:700;
+    letter-spacing: 1px;
+}
+
+.login{
+    grid-column: 2/3;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius:14px;
+    padding:28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    color:var(--white);
+    border: 1px solid rgba(255,255,255,0.04);
+    backdrop-filter: blur(6px);
+    animation: cardIn 420ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+.lgrid{ display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center }
+.logs1{ text-align:center; }
+.tekst1{ font-size:28px; margin:0; color:#fff; }
+
+.logs2{ display:flex; gap:8px; align-items:center; justify-content:center; }
+.tekst2{ color:rgba(255,255,255,0.7); font-size:14px; }
+.tekst3{ color:#cdb3ff; text-decoration:none; font-weight:600 }
+
+.mail, .pass{
+    width:100%; max-width:420px;
+    padding:12px 14px;
+    border-radius:10px;
+    background: rgba(0,0,0,0.12);
+    border: 1px solid rgba(255,255,255,0.04);
+    color: #fff;
+    font-size:15px;
+    outline:none;
+    transition: box-shadow .18s ease, transform .12s ease;
+}
+.mail:focus, .pass:focus{ box-shadow: 0 6px 20px rgba(109,84,181,0.12); transform: translateY(-2px); }
+
+.reg{
+    width:100%;
+    padding:12px 16px;
+    border-radius:10px;
+    font-weight:700;
+    color:white;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+}
+.reg:hover{ transform: translateY(-3px); box-shadow: 0 10px 30px rgba(139,92,246,0.18); }
+
+@keyframes cardIn{ from{ transform: translateY(18px); opacity:0 } to{ transform: translateY(0); opacity:1 } }
+
+@media (max-width:700px){
+    .grid{ grid-template-columns: 1fr; }
+    .login{ grid-column:1/2; width:100%; }
+    .txt1{ font-size:44px }
+}

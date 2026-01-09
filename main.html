@@ -1,0 +1,146 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOLEYCHAT</title>
+    <link rel="stylesheet" href="main.css"/>
+    <link rel="icon" type="image/x-icon" href="volleylogo.png">
+</head>
+<body>
+
+
+   <div class="svarigais">
+        <div class="augsa">
+            <div class="augsa_k">
+                <div class="logo">
+                    <img class="vlogo" src="volleylogo.png" alt="volleylogo">
+                </div>
+                <div class="vraksts">
+                    <p class="txt1">VOLEYCHAT</p>
+                </div>
+            </div>
+            <div class="augsa_v">
+                <button id="loginHeaderBtn" class="avidus" type="button">Log in</button>
+                <button id="registerHeaderBtn" class="avidus" type="button">Register</button>
+                <button id="logoutBtn" class="avidus" type="button" style="display:none;">Logout</button>
+            </div>
+            <div class="augsa_l">
+                <div class="profile">
+                    <div id="username" class="username">Not signed in</div>
+                    <div class="apfp"><img id="profilePic" class="apfp" src="pfp.jpg" alt="pfp"></div>
+                </div>
+            </div>
+        </div>
+        <div class="kreisa">
+            <div class="rakstit">
+                <div class="txtk">Raksti savu ziņojumu</div>
+                <textarea id="zinojums" name="zinojums" class="zinojums" rows="7" cols="10"></textarea>
+                <div class="pogas">
+                    <button id="postBtn" class="kpoga" type="button">Post</button>
+                </div>
+            </div>
+        </div>
+        <div class="laba">
+
+
+        </div>
+                <div class="vidus">
+                        <div id="postsContainer">
+                        </div>
+                </div>
+     </div>
+
+        <script>
+                    function escapeHtml(s){
+                        return String(s).replace(/[&<>"']/g, function(c){
+                            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c];
+                        });
+                    }
+
+                    let currentUser = null;
+                    async function fetchMe() {
+                        const r = await fetch('/api/me');
+                        const j = await r.json();
+                        currentUser = j.user;
+                        return j.user;
+                    }
+
+                    function renderPost(post) {
+                const div = document.createElement('div');
+                div.className = 'mess';
+                div.innerHTML = `
+                    <div class="boss">
+                        <div class="pfp"><img class="pfp" src="pfp.jpg" alt="pfp"></div>
+                        <div class="zina">
+                            <div class="user">${escapeHtml(post.name || 'Unknown')}</div>
+                            <div class="message">${escapeHtml(post.content)}</div>
+                        </div>
+                    </div>
+                            <div class="boss2"><div class="time">${new Date(post.created_at).toLocaleString()}</div></div>
+                `;
+                        if (currentUser && post.user_id === currentUser.id) {
+                            const trash = document.createElement('button');
+                            trash.className = 'trash-btn';
+                            trash.title = 'Delete post';
+                            trash.innerHTML = '🗑️';
+                            trash.addEventListener('click', async () => {
+                                if (!confirm('Delete this post?')) return;
+                                const res = await fetch('/api/posts/' + post.id, { method: 'DELETE' });
+                                const j = await res.json();
+                                if (res.ok) {
+                                    loadPosts();
+                                } else {
+                                    alert(j.error || 'Delete failed');
+                                }
+                            });
+                            div.appendChild(trash);
+                        }
+                return div;
+            }
+
+            async function loadPosts() {
+                const res = await fetch('/api/posts');
+                const data = await res.json();
+                const container = document.getElementById('postsContainer');
+                container.innerHTML = '';
+                (data.posts || []).forEach(p => container.appendChild(renderPost(p)));
+            }
+
+                    async function onPost() {
+                const content = document.getElementById('zinojums').value;
+                if (!content.trim()) return alert('Enter a message');
+                const res = await fetch('/api/posts', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ content }) });
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('zinojums').value = '';
+                    loadPosts();
+                } else {
+                    alert(data.error || 'Failed to post');
+                }
+            }
+
+                    document.getElementById('postBtn').addEventListener('click', onPost);
+                    document.getElementById('logoutBtn').addEventListener('click', async function(){
+                        await fetch('/api/logout', { method: 'POST' });
+                        window.location.href = '/login.html';
+                    });
+
+                    document.getElementById('loginHeaderBtn').addEventListener('click', ()=> window.location.href='/login.html');
+                    document.getElementById('registerHeaderBtn').addEventListener('click', ()=> window.location.href='/log.html');
+
+
+
+                    (async function(){
+                        const user = await fetchMe();
+                        if (user) {
+                            document.getElementById('username').textContent = user.name + ' ' + (user.surname || '');
+                            document.getElementById('logoutBtn').style.display = 'inline-block';
+                        }
+                        await loadPosts();
+                    })();
+
+        </script>
+
+</body>
+</html>

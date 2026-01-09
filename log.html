@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voleychat</title>
+    <link rel="stylesheet" href="log.css"/>
+    <link rel="icon" type="image/x-icon" href="volleylogo.png">
+</head>
+<body>
+    <div class="grid">
+        <div class="vraksts">
+            <p class="txt1">VOLEYCHAT</p>
+        </div>
+        <div class="login">
+            <div class="lgrid">
+                <div class="logs1">
+                    <p class="tekst1">Create an account</p>
+                </div>
+                <div class="logs2">
+                    <p class="tekst2">Already have an account?</p>
+                    <a class="tekst3" href="login.html">Log in</a>
+                </div>
+                <div class="logs3">
+                    <input class="name" type="text" id="name" name="name" placeholder="Name" required>
+                    <input class="surname" type="text" id="surname" name="surname" placeholder="Surname" required>
+                </div>
+                                <div class="logs4">
+                                        <input class="mail" type="email" id="mail" name="mail" placeholder="Email" required>
+                                </div>
+                                <div class="logs5">
+                                        <input class="pass" minlength="8" required type="password" id="pass" name="pass" placeholder="Enter your password (8 characters minimum)" required>
+                                </div>
+                                <div class="logs6">
+                                        <input class="pass2" type="password" id="pass2" name="pass2" placeholder="Re-enter your password" required>
+                                </div>
+                                <div class="logs7">
+                                        <button id="createBtn" class="reg" type="button">Create account</button>
+                                </div>
+            </div>
+        </div>
+    </div>
+        <script>
+            async function onRegister() {
+                const name = document.getElementById('name').value;
+                const surname = document.getElementById('surname').value;
+                const email = document.getElementById('mail').value;
+                const pass = document.getElementById('pass').value;
+                const pass2 = document.getElementById('pass2').value;
+                if (pass !== pass2) return alert('Passwords do not match');
+                if (pass.length < 8) return alert('Password must be at least 8 characters');
+
+                const res = await fetch('/api/register', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ name, surname, email, password: pass })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    window.location.href = '/main.html';
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            }
+            document.getElementById('createBtn').addEventListener('click', onRegister);
+        </script>
+</body>
+</html>

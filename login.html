@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voleychat</title>
+    <link rel="stylesheet" href="login.css"/>
+    <link rel="icon" type="image/x-icon" href="volleylogo.png">
+</head>
+<body>
+    <div class="grid">
+        <div class="vraksts">
+            <p class="txt1">VOLEYCHAT</p>
+        </div>
+        <div class="login">
+            <div class="lgrid">
+                <div class="logs1">
+                    <p class="tekst1">Log in</p>
+                </div>
+                <div class="logs2">
+                    <p class="tekst2">Dont have an account?</p>
+                    <a class="tekst3" href="log.html">Register</a>
+                </div>
+                <div class="logs4">
+                    <input class="mail" type="text" id="mail" name="mail" placeholder="Email" required>
+                </div>
+                <div class="logs5">
+                                        <input class="pass" type="password" id="pass" name="pass" placeholder="Enter your password" required>
+                </div>
+                <div class="logs7">
+                                        <button id="loginBtn" class="reg" type="button">Log in</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script>
+            async function onLogin() {
+                const email = document.getElementById('mail').value;
+                const password = document.getElementById('pass').value;
+                const res = await fetch('/api/login', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    window.location.href = '/main.html';
+                } else {
+                    alert(data.error || 'Login failed');
+                }
+            }
+            document.getElementById('loginBtn').addEventListener('click', onLogin);
+        </script>
+</body>
+</html>
